@@ -2,120 +2,308 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<!-- Wichtige Meta-Tags für das iPhone Vollbild-App-Verhalten -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Instagram">
 
-<!-- Zeile für dein Instagram-App-Logo auf dem Home-Bildschirm -->
-<link rel="apple-touch-icon" href="Instagram_icon.png">
+<!-- Denke daran: Wenn dein Logo auf GitHub anders heißt, passe diesen Namen an! -->
+<link rel="apple-touch-icon" href="Instagram_icon.jpg">
 
 <title>Scroll Therapie</title>
 <style>
+:root {
+--nav-height: 50px;
+/* Sorgt dafür, dass die Leiste über dem Home-Balken vom iPhone bleibt */
+--safe-bottom: env(safe-area-inset-bottom);
+}
+
 body, html {
 margin: 0;
 padding: 0;
-background-color: #000; /* Komplett schwarzer Hintergrund */
+background-color: #000;
 height: 100%;
-overflow: hidden; /* Verhindert das Standard-Gummiband-Scrollen von Safari */
+overflow: hidden;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-#feed {
-height: 100vh;
+/* --- ALLGEMEINE ICONS --- */
+.icon {
+width: 24px;
+height: 24px;
+fill: none;
+stroke: #fff;
+stroke-width: 2;
+stroke-linecap: round;
+stroke-linejoin: round;
+}
+
+/* --- UNTERE NAVIGATION --- */
+#bottom-nav {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+height: calc(var(--nav-height) + var(--safe-bottom));
+background-color: #000;
+border-top: 1px solid #262626;
+display: flex;
+justify-content: space-around;
+align-items: center;
+padding-bottom: var(--safe-bottom);
+z-index: 1000;
+}
+
+.nav-btn {
+width: 50%;
+height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+opacity: 0.5; /* Inaktiv leicht ausgegraut */
+transition: opacity 0.2s;
+}
+
+.nav-btn.active {
+opacity: 1; /* Aktiv strahlend weiß */
+}
+
+/* --- ANSICHTEN (Home & Reels) --- */
+.view {
+height: calc(100vh - var(--nav-height) - var(--safe-bottom));
+width: 100vw;
+display: none; /* Standardmäßig ausgeblendet */
 overflow-y: scroll;
-/* Scroll-Snapping sorgt für das befriedigende Einrasten beim Scrollen */
-scroll-snap-type: y mandatory;
 -ms-overflow-style: none;
 scrollbar-width: none;
 }
 
-#feed::-webkit-scrollbar {
-display: none; /* Versteckt den Scrollbalken */
+.view::-webkit-scrollbar {
+display: none;
 }
 
-.post {
-height: 100vh;
+.view.active {
+display: block; /* Nur die aktive Ansicht wird gezeigt */
+}
+
+/* --- HOME FEED --- */
+.home-post {
+width: 100vw;
+margin-bottom: 20px;
+}
+
+.home-header {
+display: flex;
+align-items: center;
+padding: 10px 14px;
+}
+
+/* Der graue Ring der Story */
+.story-ring {
+width: 34px;
+height: 34px;
+border-radius: 50%;
+border: 2px solid #555;
+display: flex;
+justify-content: center;
+align-items: center;
+margin-right: 10px;
+}
+
+/* Das schwarze Profilbild mit schwarzem Rand für den Abstand zum Ring */
+.profile-pic {
+width: 28px;
+height: 28px;
+border-radius: 50%;
+background-color: #000;
+border: 2px solid #000;
+}
+
+.username {
+color: #fff;
+font-weight: 600;
+font-size: 14px;
+}
+
+/* Das eigentliche Dummy-Bild in Grau */
+.post-image {
+width: 100vw;
+height: 125vw; /* 4:5 Format (Instagram Standard) */
+background-color: #444; /* Grau */
+}
+
+.home-footer {
+display: flex;
+justify-content: space-between;
+padding: 12px 14px;
+}
+
+.footer-left {
+display: flex;
+gap: 16px;
+}
+
+/* --- REELS FEED --- */
+#reels-view {
+scroll-snap-type: y mandatory;
+}
+
+.reels-post {
+height: calc(100vh - var(--nav-height) - var(--safe-bottom));
 width: 100vw;
 position: relative;
 scroll-snap-align: start;
 box-sizing: border-box;
-/* Die zwei dünnen grauen Striche oben und unten */
 border-top: 1px solid #333;
 border-bottom: 1px solid #333;
 background-color: #000;
-/* Ein kleiner Abstand, damit die Striche doppelt wirken, wenn zwei Posts aneinanderstoßen */
 margin-bottom: 2px;
 }
 
-.icon-container {
+.reels-icon-container {
 position: absolute;
-bottom: 15vh; /* Positionierung unten rechts */
+bottom: 30px;
 right: 15px;
 display: flex;
 flex-direction: column;
-gap: 25px; /* Abstand zwischen den Icons */
+gap: 25px;
 align-items: center;
-}
-
-.icon {
-width: 30px;
-height: 30px;
-fill: none;
-stroke: #fff; /* Weiße Umrandung wie bei IG */
-stroke-width: 2;
-stroke-linecap: round;
-stroke-linejoin: round;
 }
 </style>
 </head>
 <body>
 
-<div id="feed">
-<!-- Das Skript füllt diesen Bereich automatisch -->
+<!-- HOME ANSICHT (Startseite) -->
+<div id="home-view" class="view active">
+<!-- Home-Posts werden per JS geladen -->
+</div>
+
+<!-- REELS ANSICHT (Scrollen) -->
+<div id="reels-view" class="view">
+<!-- Reels-Posts werden per JS geladen -->
+</div>
+
+<!-- UNTERE NAVIGATION (Bottom Bar) -->
+<div id="bottom-nav">
+<!-- Home Icon -->
+<div id="nav-home" class="nav-btn active">
+<svg class="icon" viewBox="0 0 24 24">
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+</div>
+<!-- Reels Icon (Klappe) -->
+<div id="nav-reels" class="nav-btn">
+<svg class="icon" viewBox="0 0 24 24">
+<rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+<line x1="7" y1="2" x2="7" y2="22"></line>
+<line x1="17" y1="2" x2="17" y2="22"></line>
+<line x1="2" y1="12" x2="22" y2="12"></line>
+<line x1="2" y1="7" x2="7" y2="7"></line>
+<line x1="2" y1="17" x2="7" y2="17"></line>
+<line x1="17" y1="17" x2="22" y2="17"></line>
+<line x1="17" y1="7" x2="22" y2="7"></line>
+</svg>
+</div>
 </div>
 
 <script>
-// Die SVG-Codes für Herz, Kommentar, Teilen und Repost
-const iconsHTML = `
-<!-- Like / Herz -->
-<svg class="icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-<!-- Kommentar / Blase -->
-<svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-<!-- Teilen / Papierflieger -->
-<svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-<!-- Repost / Pfeile -->
-<svg class="icon" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
-`;
+// --- ICON SVGs ---
+const heartIcon = `<svg class="icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+const commentIcon = `<svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>`;
+const shareIcon = `<svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`;
+const saveIcon = `<svg class="icon" viewBox="0 0 24 24"><polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"></polygon></svg>`;
+const repostIcon = `<svg class="icon" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>`;
 
-const feed = document.getElementById('feed');
+// --- NAVIGATION LOGIK ---
+const btnHome = document.getElementById('nav-home');
+const btnReels = document.getElementById('nav-reels');
+const viewHome = document.getElementById('home-view');
+const viewReels = document.getElementById('reels-view');
 
-// Funktion, um einen neuen leeren Post zu erstellen
-function createPost() {
+btnHome.addEventListener('click', () => {
+btnHome.classList.add('active');
+btnReels.classList.remove('active');
+viewHome.classList.add('active');
+viewReels.classList.remove('active');
+});
+
+btnReels.addEventListener('click', () => {
+btnReels.classList.add('active');
+btnHome.classList.remove('active');
+viewReels.classList.add('active');
+viewHome.classList.remove('active');
+});
+
+// --- GENERIERUNG DER BEITRÄGE ---
+
+// Funktion für Home-Posts (Startseite)
+function createHomePost() {
 const post = document.createElement('div');
-post.className = 'post';
-
-const iconContainer = document.createElement('div');
-iconContainer.className = 'icon-container';
-iconContainer.innerHTML = iconsHTML;
-
-post.appendChild(iconContainer);
+post.className = 'home-post';
+post.innerHTML = `
+<div class="home-header">
+<div class="story-ring">
+<div class="profile-pic"></div>
+</div>
+<div class="username">just_stop</div>
+</div>
+<div class="post-image"></div>
+<div class="home-footer">
+<div class="footer-left">
+${heartIcon}
+${commentIcon}
+${shareIcon}
+</div>
+<div class="footer-right">
+${saveIcon}
+</div>
+</div>
+`;
 return post;
 }
 
-// Lade am Anfang 5 leere Posts
-for (let i = 0; i < 5; i++) {
-feed.appendChild(createPost());
+// Funktion für Reels-Posts (wie bisher)
+function createReelsPost() {
+const post = document.createElement('div');
+post.className = 'reels-post';
+post.innerHTML = `
+<div class="reels-icon-container">
+${heartIcon}
+${commentIcon}
+${shareIcon}
+${repostIcon}
+</div>
+`;
+return post;
 }
 
-// Infinite Scroll: Sobald du nach unten scrollst, werden neue Posts generiert
-feed.addEventListener('scroll', () => {
-if (feed.scrollTop + feed.clientHeight >= feed.scrollHeight - 1000) {
+// --- INITIALES LADEN UND INFINITE SCROLL ---
+
+// Jeweils 5 Posts am Anfang laden
+for (let i = 0; i < 5; i++) {
+viewHome.appendChild(createHomePost());
+viewReels.appendChild(createReelsPost());
+}
+
+// Unendliches Scrollen für den Home-Feed
+viewHome.addEventListener('scroll', () => {
+if (viewHome.scrollTop + viewHome.clientHeight >= viewHome.scrollHeight - 1000) {
 for (let i = 0; i < 3; i++) {
-feed.appendChild(createPost());
+viewHome.appendChild(createHomePost());
+}
+}
+});
+
+// Unendliches Scrollen für den Reels-Feed
+viewReels.addEventListener('scroll', () => {
+if (viewReels.scrollTop + viewReels.clientHeight >= viewReels.scrollHeight - 1000) {
+for (let i = 0; i < 3; i++) {
+viewReels.appendChild(createReelsPost());
 }
 }
 });
 </script>
 </body>
 </html>
+
