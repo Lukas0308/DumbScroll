@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<!-- Wichtige Meta-Tags, damit es sich auf dem iPhone wie eine echte App anfühlt -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Scrollen">
+<title>Scroll Therapie</title>
+<style>
+body, html {
+margin: 0;
+padding: 0;
+background-color: #000; /* Komplett schwarzer Hintergrund */
+height: 100%;
+overflow: hidden; /* Verhindert das Standard-Gummiband-Scrollen von Safari */
+}
+
+#feed {
+height: 100vh;
+overflow-y: scroll;
+/* Scroll-Snapping sorgt für das befriedigende Einrasten beim Scrollen */
+scroll-snap-type: y mandatory;
+-ms-overflow-style: none;
+scrollbar-width: none;
+}
+
+#feed::-webkit-scrollbar {
+display: none; /* Versteckt den Scrollbalken */
+}
+
+.post {
+height: 100vh;
+width: 100vw;
+position: relative;
+scroll-snap-align: start;
+box-sizing: border-box;
+/* Die zwei dünnen grauen Striche oben und unten */
+border-top: 1px solid #333;
+border-bottom: 1px solid #333;
+background-color: #000;
+/* Ein kleiner Abstand, damit die Striche doppelt wirken, wenn zwei Posts aneinanderstoßen */
+margin-bottom: 2px;
+}
+
+.icon-container {
+position: absolute;
+bottom: 15vh; /* Positionierung unten rechts */
+right: 15px;
+display: flex;
+flex-direction: column;
+gap: 25px; /* Abstand zwischen den Icons */
+align-items: center;
+}
+
+.icon {
+width: 30px;
+height: 30px;
+fill: none;
+stroke: #fff; /* Weiße Umrandung wie bei IG */
+stroke-width: 2;
+stroke-linecap: round;
+stroke-linejoin: round;
+}
+</style>
+</head>
+<body>
+
+<div id="feed">
+<!-- Das Skript füllt diesen Bereich automatisch -->
+</div>
+
+<script>
+// Die SVG-Codes für Herz, Kommentar, Teilen und Repost
+const iconsHTML = `
+<!-- Like / Herz -->
+<svg class="icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+<!-- Kommentar / Blase -->
+<svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+<!-- Teilen / Papierflieger -->
+<svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+<!-- Repost / Pfeile -->
+<svg class="icon" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+`;
+
+const feed = document.getElementById('feed');
+
+// Funktion, um einen neuen leeren Post zu erstellen
+function createPost() {
+const post = document.createElement('div');
+post.className = 'post';
+
+const iconContainer = document.createElement('div');
+iconContainer.className = 'icon-container';
+iconContainer.innerHTML = iconsHTML;
+
+post.appendChild(iconContainer);
+return post;
+}
+
+// Lade am Anfang 5 leere Posts
+for (let i = 0; i < 5; i++) {
+feed.appendChild(createPost());
+}
+
+// Infinite Scroll: Sobald du nach unten scrollst, werden neue Posts generiert
+feed.addEventListener('scroll', () => {
+// Wenn man fast am Ende angekommen ist...
+if (feed.scrollTop + feed.clientHeight >= feed.scrollHeight - 1000) {
+// ... füge 3 neue Posts hinzu (unendliches Scrollen)
+for (let i = 0; i < 3; i++) {
+feed.appendChild(createPost());
+}
+}
+});
+</script>
+</body>
+</html>
