@@ -12,7 +12,8 @@
 <title>Scroll Therapie</title>
 <style>
 :root {
---nav-height: 48px; /* Standardhöhe der Leiste */
+/* EXTREM DÜNN: 35 Pixel sind unter 1 cm */
+--nav-height: 35px;
 }
 
 body, html {
@@ -25,8 +26,8 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, A
 }
 
 .icon {
-width: 24px;
-height: 24px;
+width: 22px;
+height: 22px;
 fill: none;
 stroke: #fff;
 stroke-width: 2;
@@ -34,10 +35,10 @@ stroke-linecap: round;
 stroke-linejoin: round;
 }
 
-/* --- UNTERE NAVIGATION (Erzwungen ganz unten) --- */
+/* --- UNTERE NAVIGATION --- */
 #bottom-nav {
 position: fixed;
-bottom: 0 !important; /* Sitzt jetzt direkt auf der Gehäusekante */
+bottom: 0 !important;
 left: 0;
 width: 100%;
 height: var(--nav-height);
@@ -45,10 +46,10 @@ background-color: #000;
 border-top: 1px solid #1a1a1a;
 display: flex;
 justify-content: space-around;
-align-items: center;
+align-items: center; /* Zentriert die Icons exakt in der 35px Leiste */
 z-index: 1000;
-box-sizing: border-box;
-padding-bottom: 4px; /* Minimaler Abstand für die Optik */
+padding: 0; /* Null extra Abstand */
+margin: 0;
 }
 
 .nav-btn {
@@ -159,7 +160,7 @@ margin-bottom: 2px;
 
 .reels-icon-container {
 position: absolute;
-bottom: 20px;
+bottom: 60px; /* Deutlich nach oben verschoben, damit sie beim Scrollen immer sichtbar bleiben */
 right: 15px;
 display: flex;
 flex-direction: column;
